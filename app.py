@@ -13,7 +13,7 @@ db = SQLAlchemy(app)
 class Post(db.Model):
     __tablename__ = 'posts'
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.String(255), nullable=False)
     title = db.Column(db.String(255), nullable=False)
     content = db.Column(db.Text, nullable=False)
     image_id = db.Column(db.Text, default="https://xsgames.co/randomusers/assets/images/favicon.png")
@@ -32,10 +32,10 @@ class Comment(db.Model):
 def create_post():
     data = request.get_json()
 
-    if not data or not data.get('title') or not data.get('content') or not data.get('username'):
+    if not data or not data.get('title') or not data.get('content') or not data.get('user_id'):
         return jsonify({"error": "Missing required fields"}), 400
 
-    new_post = Post(username = data['username'], title=data['title'], content=data['content'])
+    new_post = Post(user_id = data['user_id'], title=data['title'], content=data['content'])
 
     try:
         db.session.add(new_post)
@@ -53,7 +53,7 @@ def get_posts():
     for post in posts:
         post_data = {
             'id': post.id,
-            'username' : post.username,
+            'user_id' : post.user_id,
             'title': post.title,
             'content': post.content,
             'likes': post.likes,
@@ -74,7 +74,7 @@ def get_post(post_id):
 
     post_data = {
         'id': post.id,
-        'username' : post.username,
+        'user_id' : post.user_id,
         'title': post.title,
         'content': post.content,
         'likes': post.likes,
